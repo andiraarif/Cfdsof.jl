@@ -1,0 +1,13 @@
+name = "Cfdsof"
+uuid = "48bf24d3-49b6-4e19-83ca-659ae9ee3b47"
+authors = ["Mohamad Arif Andira"]
+version = "0.1.0"
+
+[compat]
+julia = "1.7"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
