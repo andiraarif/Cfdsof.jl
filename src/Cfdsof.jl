@@ -7,10 +7,11 @@ include("io.jl")
 include("readOpenFoamMesh.jl")
 include("writeOpenFoamMesh.jl")
 
-meshPath = "src/testCases/motorBike/constant/polyMesh"
+caseName = "motorBike"
+meshPath = "src/testCases/$caseName/constant/polyMesh"
 
 mesh = readOpenFoamMesh(meshPath)
 printMesh(mesh)
-@time writeOpenFoamMesh(mesh)
+writeOpenFoamMesh(mesh)
 
 end

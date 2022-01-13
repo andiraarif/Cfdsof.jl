@@ -52,6 +52,12 @@ mutable struct Mesh
     faces::Vector{Face}
     cells::Vector{Cell}
     boundaries::Vector{Boundary}
+    nNodes::Int64
+    nFaces::Int64
+    nInternalFaces::Int64
+    nBoundaryFaces::Int64
+    nCells::Int64
+    nBoundaries::Int64
 end
 
 function nodeIndexToCoord(iNodes::Vector{Int64}, nodes::Vector{Vector{Float64}})
@@ -148,7 +154,8 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
     nNodes = length(points)
     nFaces = length(faces)
     nInternalFaces = length(neighbour)
-    nCells = maximum(owner)
+    nBoundaryFaces = nFaces - nInternalFaces
+    if maximum(owner) > maximum(neighbour) nCells = maximum(owner) else nCells = maximum(neighbour) end
     nBoundaries = length(boundary)
 
     nodeVec = [Node() for _ in 1:nNodes]
@@ -224,5 +231,7 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
             face.wallDist = dot(face.cn, ef)
         end
     end
-    return Mesh(nodeVec, faceVec, cellVec, boundaryVec)
+
+    return Mesh(nodeVec, faceVec, cellVec, boundaryVec, nNodes, 
+        nFaces, nInternalFaces, nBoundaryFaces, nCells, nBoundaries)
 end    
