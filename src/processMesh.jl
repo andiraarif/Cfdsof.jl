@@ -225,10 +225,12 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
             face.gf = dot(face.cn, ef) / (dot(face.cn, ef) + dot(dfn, ef))
             face.t = dfn + face.cn
             face.wallDist = 0
+            face.geoDiff = face.area / norm(cellVec[face.iOwner].centroid - cellVec[face.iNeighbour].centroid)
         else
             face.gf = 1
             face.t = face.cn
             face.wallDist = dot(face.cn, ef)
+            face.geoDiff = face.area / face.wallDist
         end
     end
 
