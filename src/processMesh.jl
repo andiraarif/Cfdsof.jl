@@ -155,7 +155,7 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
     nFaces = length(faces)
     nInternalFaces = length(neighbour)
     nBoundaryFaces = nFaces - nInternalFaces
-    if maximum(owner) > maximum(neighbour) nCells = maximum(owner) else nCells = maximum(neighbour) end
+    maximum(owner) > maximum(neighbour) ? nCells = maximum(owner) : nCells = maximum(neighbour)
     nBoundaries = length(boundary)
 
     nodeVec = [Node() for _ in 1:nNodes]
@@ -180,8 +180,8 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
             nodeVec[iNode].index = iNode
             push!(nodeVec[iNode].iFaces, iFace)
             nodeVec[iNode].centroid = points[iNode]
-            if !(owner[iFace] in nodeVec[iNode].iCells) push!(nodeVec[iNode].iCells, owner[iFace]) end
-            if !(iNode in cellVec[owner[iFace]].iNodes) push!(cellVec[owner[iFace]].iNodes, iNode) end
+            !(owner[iFace] in nodeVec[iNode].iCells) && push!(nodeVec[iNode].iCells, owner[iFace])
+            !(iNode in cellVec[owner[iFace]].iNodes) && push!(cellVec[owner[iFace]].iNodes, iNode)
         end
 
         if iFace <= nInternalFaces

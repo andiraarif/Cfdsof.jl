@@ -28,7 +28,6 @@ function printFace(face)
     println("    iNeighbourOwnerCoeff: ", face.iNeighbourOwnerCoeff)
 end
 
-
 function printBoundary(boundary)
     println("")
     println("Boundary $(boundary.index) = ")
