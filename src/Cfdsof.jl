@@ -9,23 +9,26 @@ include("boundaryConditions.jl")
 include("output.jl")
 
 # Case general information
-caseName = "elbow"
+caseName = "fryingPan"
 
 # Mesh
 meshPath = "src/testCases/$caseName/constant/polyMesh"
 mesh = readOpenFoamMesh(meshPath)
 
 # Setup fields
-U = setupVectorField("U", mesh, "0")
-p = setupScalarField("p", mesh, "0")
+#U = setupVectorField("U", mesh, "0")
+#p = setupScalarField("p", mesh, "0")
+T = setupScalarField("T", mesh, "0")
 
 # Boundary conditions
-#assignFixedValueBC(mesh, "movingWall", U, [1.0, 0.0, 0.0])
-assignFixedValueBC(mesh, "velocity-inlet-5", U, [10.0, 0.0, 0.0])
-assignFixedValueBC(mesh, "velocity-inlet-6", U, [0.0, 5.0, 0.0])
+assignFixedValueBC(mesh, "hotFace", T, 300)
+#assignFixedValueBC(mesh, "airfoil", p, 10)
+#assignFixedValueBC(mesh, "empty", p, 20)
+#assignFixedValueBC(mesh, "inlet", p, 30)
+#assignFixedValueBC(mesh, "outlet", p, 40)
 
 # Write outputs
-writeVtuBoundary(mesh, caseName, U, p)
+writeVtu(mesh, caseName, T)
 writeOpenFoamMesh(mesh)
 
 end
