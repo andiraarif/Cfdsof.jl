@@ -21,10 +21,11 @@ p = setupScalarField("p", mesh, "0")
 
 # Boundary conditions
 #assignFixedValueBC(mesh, "movingWall", U, [1.0, 0.0, 0.0])
+assignFixedValueBC(mesh, "velocity-inlet-5", U, [10.0, 0.0, 0.0])
 assignFixedValueBC(mesh, "velocity-inlet-6", U, [0.0, 5.0, 0.0])
 
 # Write outputs
-writeVtuMesh(mesh, caseName, U, p)
+writeVtuBoundary(mesh, caseName, U, p)
 writeOpenFoamMesh(mesh)
 
 end
