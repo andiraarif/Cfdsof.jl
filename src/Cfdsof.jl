@@ -9,7 +9,7 @@ include("boundaryConditions.jl")
 include("output.jl")
 
 # Case general information
-caseName = "cavity"
+caseName = "elbow"
 
 # Mesh
 meshPath = "src/testCases/$caseName/constant/polyMesh"
@@ -20,11 +20,11 @@ U = setupVectorField("U", mesh, "0")
 p = setupScalarField("p", mesh, "0")
 
 # Boundary conditions
-assignFixedValueBC(mesh, "movingWall", U, [1.0, 0.0, 0.0])
-assignFixedValueBC(mesh, "movingWall", p, 10)
-
-U.cellValues[2:4,:] = [[1,2,1], [1,1,1], [2,3,3]]
+#assignFixedValueBC(mesh, "movingWall", U, [1.0, 0.0, 0.0])
+assignFixedValueBC(mesh, "velocity-inlet-6", U, [0.0, 5.0, 0.0])
 
 # Write outputs
 writeVtuMesh(mesh, caseName, U, p)
+writeOpenFoamMesh(mesh)
+
 end

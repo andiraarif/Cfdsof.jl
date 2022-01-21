@@ -15,7 +15,7 @@ mutable struct VectorField
 end
 
 function setupScalarField(name, mesh, time)
-    cellValues = [0.0 for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
+    cellValues = [10.0 for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
     faceValues = [0.0 for _ in 1:mesh.nFaces]
     return ScalarField(name, "scalar", time, cellValues, faceValues)
 end
