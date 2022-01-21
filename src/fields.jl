@@ -2,14 +2,14 @@ mutable struct ScalarField
     name::String
     type::String
     time::String
-    field::Vector{Float64}
+    values::Vector{Float64}
 end
 
 mutable struct VectorField
     name::String
     type::String
     time::String
-    field::Vector{Vector{Float64}}
+    values::Vector{Vector{Float64}}
 end
 
 function setupVolScalarField(name, mesh, time)

@@ -5,10 +5,10 @@ function findBoundaryIndex(boundaries, name)
 end
 
 
-function assignFixedValueBC(mesh, boundaryName, var, value)
+function assignFixedValueBC(mesh, boundaryName, field, value)
     iBoundary = findBoundaryIndex(mesh.boundaries, boundaryName)
     boundary = mesh.boundaries[iBoundary]
     iFaceStart = boundary.startFace
     iFaceEnd = iFaceStart + boundary.nFaces - 1
-    var.field[iFaceStart:iFaceEnd, :] = [value for _ in 1:boundary.nFaces]
+    field.values[iFaceStart:iFaceEnd, :] = [value for _ in 1:boundary.nFaces]
 end

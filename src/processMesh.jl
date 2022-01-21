@@ -155,8 +155,8 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
     nFaces = length(faces)
     nInternalFaces = length(neighbour)
     nBoundaryFaces = nFaces - nInternalFaces
-    maximum(owner) > maximum(neighbour) ? nCells = maximum(owner) : nCells = maximum(neighbour)
     nBoundaries = length(boundary)
+    maximum(owner) > maximum(neighbour) ? nCells = maximum(owner) : nCells = maximum(neighbour)
 
     nodeVec = [Node() for _ in 1:nNodes]
     faceVec = [Face() for _ in 1:nFaces]
@@ -178,8 +178,8 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
 
         for iNode in faceVec[iFace].iNodes
             nodeVec[iNode].index = iNode
-            push!(nodeVec[iNode].iFaces, iFace)
             nodeVec[iNode].centroid = points[iNode]
+            push!(nodeVec[iNode].iFaces, iFace)
             !(owner[iFace] in nodeVec[iNode].iCells) && push!(nodeVec[iNode].iCells, owner[iFace])
             !(iNode in cellVec[owner[iFace]].iNodes) && push!(cellVec[owner[iFace]].iNodes, iNode)
         end
@@ -236,4 +236,75 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
 
     return Mesh(nodeVec, faceVec, cellVec, boundaryVec, nNodes, 
         nFaces, nInternalFaces, nBoundaryFaces, nCells, nBoundaries)
+end
+
+function printNode(node)
+    println("")
+    println("Node $(node.index) = ")
+    println("")
+    println("                   index: ", node.index)
+    println("                centroid: ", node.centroid)
+    println("                  iFaces: ", node.iFaces)
+    println("                  iCells: ", node.iCells)
+end
+
+function printFace(face)
+    println("")
+    println("Face $(face.index) = ")
+    println("")
+    println("                   index: ", face.index)
+    println("                  iNodes: ", face.iNodes)
+    println("                  iOwner: ", face.iOwner)
+    println("              iNeighbour: ", face.iNeighbour)
+    println("                centroid: ", face.centroid)
+    println("                    area: ", face.area)
+    println("                      Sf: ", face.sf)
+    println("                      CN: ", face.cn)
+    println("                 geodiff: ", face.geoDiff)
+    println("                       T: ", face.t)
+    println("                      gf: ", face.gf)
+    println("                walldist: ", face.wallDist)
+    println("    iOwnerNeighbourCoeff: ", face.iOwnerNeighbourCoeff)
+    println("    iNeighbourOwnerCoeff: ", face.iNeighbourOwnerCoeff)
+end
+
+function printBoundary(boundary)
+    println("")
+    println("Boundary $(boundary.index) = ")
+    println("")
+    println("                   index: ", boundary.index)
+    println("                    name: ", boundary.name)
+    println("                    type: ", boundary.type)
+    println("               startFace: ", boundary.startFace)
+    println("          numberOfBFaces: ", boundary.nFaces)
+end
+
+function printCell(cell)
+    println("")
+    println("Cell $(cell.index) = ")
+    println("")
+    println("                   index: ", cell.index)
+    println("                  iFaces: ", cell.iFaces)
+    println("                  iNodes: ", cell.iNodes)
+    println("             iNeighbours: ", cell.iNeighbours)
+    println("      numberOfNeighbours: ", cell.nNeighbours)
+    println("               faceSigns: ", cell.faceSigns)
+    println("                  volume: ", cell.volume)
+    println("                centroid: ", cell.centroid)
+end
+
+function printMesh(mesh)
+    println("")
+    println("Mesh = ")
+    println("")
+    println("                   nodes: ", typeof(mesh.nodes))
+    println("           numberOfNodes: ", mesh.nNodes)
+    println("                   faces: ", typeof(mesh.faces))
+    println("           numberOfFaces: ", mesh.nFaces)
+    println("                   cells: ", typeof(mesh.cells))
+    println("           numberOfCells: ", mesh.nCells)
+    println("              boundaries: ", typeof(mesh.boundaries))
+    println("      numberOfBoundaries: ", mesh.nBoundaries)
+    println("   numberOfInteriorFaces: ", mesh.nInternalFaces)
+    println("   numberOfBoundaryFaces: ", mesh.nBoundaryFaces) 
 end    
