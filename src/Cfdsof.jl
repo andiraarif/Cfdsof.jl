@@ -16,11 +16,8 @@ meshPath = "src/testCases/$caseName/constant/polyMesh"
 mesh = readOpenFoamMesh(meshPath)
 
 # Setup fields
-U = setupVolVectorField("U", mesh, "0")
-p = setupVolScalarField("p", mesh, "0")
-
-Uf = setupSurfaceVectorField("Uf", mesh, "0")
-pf = setupSurfaceScalarField("pf", mesh, "0")
+U = setupVectorField("U", mesh, "0")
+p = setupScalarField("p", mesh, "0")
 
 # Boundary conditions
 #assignFixedValueBC(mesh, "movingWall", U, [1.0, 0.0, 0.0])
