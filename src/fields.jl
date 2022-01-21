@@ -20,7 +20,7 @@ function setupScalarField(name, mesh, time)
     return ScalarField(name, "scalar", time, cellValues, faceValues)
 end
 
-function setupVolVectorField(name, mesh, time)
+function setupVectorField(name, mesh, time)
     cellValues = [[0.0, 0.0, 0.0] for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
     faceValues = [[0.0, 0.0, 0.0] for _ in 1:mesh.nFaces]
     return VectorField(name, "vector", time, cellValues, faceValues)

@@ -182,6 +182,11 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
             push!(nodeVec[iNode].iFaces, iFace)
             !(owner[iFace] in nodeVec[iNode].iCells) && push!(nodeVec[iNode].iCells, owner[iFace])
             !(iNode in cellVec[owner[iFace]].iNodes) && push!(cellVec[owner[iFace]].iNodes, iNode)
+
+            if iFace <= nInternalFaces
+                !(neighbour[iFace] in nodeVec[iNode].iCells) && push!(nodeVec[iNode].iCells, neighbour[iFace])
+                !(iNode in cellVec[neighbour[iFace]].iNodes) && push!(cellVec[neighbour[iFace]].iNodes, iNode)
+            end
         end
 
         if iFace <= nInternalFaces

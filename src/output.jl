@@ -1,38 +1,25 @@
 using WriteVTK
 
-function writeSimplestOutput(mesh, field)
-    xCells = [mesh.cells[i].centroid[1] for i in 1:mesh.nCells]
-    yCells = [mesh.cells[i].centroid[2] for i in 1:mesh.nCells]
-    zCells = [mesh.cells[i].centroid[3] for i in 1:mesh.nCells]
-
-    iBoundaryStart = mesh.boundaries[1].startFace
-    iBoundaryEnd = iBoundaryStart + mesh.nBoundaryFaces - 1
-
-    xBoundaries = [mesh.faces[i].centroid[1] for i in iBoundaryStart:iBoundaryEnd]
-    yBoundaries = [mesh.faces[i].centroid[2] for i in iBoundaryStart:iBoundaryEnd]
-    zBoundaries = [mesh.faces[i].centroid[3] for i in iBoundaryStart:iBoundaryEnd]
-
+function writeVtuMesh(mesh, fileName, fields...)
     x = [mesh.nodes[i].centroid[1] for i in 1:length(mesh.nodes)]
     y = [mesh.nodes[i].centroid[2] for i in 1:length(mesh.nodes)]
     z = [mesh.nodes[i].centroid[3] for i in 1:length(mesh.nodes)]
-    cells = MeshCell[]
+    cells = VTKPolyhedron[]
+    
+    nodes = transpose(hcat(x, y, z))
 
     for iCell in 1:mesh.nCells
-        #println(mesh.cells[iCell].iNodes)
-        cell = MeshCell(VTKCellTypes.VTK_HEXAHEDRON, mesh.cells[iCell].iNodes)
-        push!(cells, cell)
+        cell = mesh.cells[iCell]
+        faces = []
+        for iFace in cell.iFaces
+            push!(faces, mesh.faces[iFace].iNodes)
+        end
+        polyCell = VTKPolyhedron(cell.iNodes, faces...)
+        push!(cells, polyCell)
     end
 
-    vtk = vtk_grid("airFoil", hcat(x, y, z), cells)
-    vtk_save(vtk)
-
-    #=
-    points = rand(3, 5)  # 5 points in three dimensions
-    cells = [MeshCell(VTKCellTypes.VTK_TRIANGLE, [1, 4, 2]),
-    MeshCell(VTKCellTypes.VTK_QUAD,     [2, 4, 3, 5])]
-   
-
-    vtk = vtk_grid("filename", points, cells)
-    vtk_save(vtk)
-     =#
+    vtu = vtk_grid(fileName, nodes, cells)
+    vtu["U"] = transpose(mapreduce(permutedims, vcat, fields[1].cellValues))
+    vtu["p"] = fields[2].cellValues
+    vtk_save(vtu)
 end
