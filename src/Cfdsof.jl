@@ -28,7 +28,7 @@ assignFixedValueBC(mesh, "hotFace", T, 300)
 #assignFixedValueBC(mesh, "outlet", p, 40)
 
 # Write outputs
-writeVtu(mesh, caseName, T)
+writeVtu(mesh, "src/testCases/vtu/$caseName", T)
 writeOpenFoamMesh(mesh)
 
 end
