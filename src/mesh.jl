@@ -16,14 +16,17 @@ mutable struct Face
     centroid::Vector{Float64}
     area::Float64
     sf::Vector{Float64}
-    cn::Vector{Float64}
+    n::Vector{Float64}
+    dCF::Vector{Float64}
+    eCF::Vector{Float64}
+    dCf::Vector{Float64}
     t::Vector{Float64}
     geoDiff::Float64
     wallDist::Float64
     gf::Float64
     iOwnerNeighbourCoeff::Int64
     iNeighbourOwnerCoeff::Int64
-    Face() = new(0, 0, 0, [], [], 0.0, [], [], [], 0.0, 0.0, 0.0, 0, 0)
+    Face() = new(0, 0, 0, [], [], 0.0, [], [], [], [], [], [], 0.0, 0.0, 0.0, 0, 0)
 end
 
 mutable struct Cell
@@ -221,22 +224,23 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
     end
 
     for face in faceVec
-        face.cn = face.centroid - cellVec[face.iOwner].centroid
+        face.dCf = face.centroid - cellVec[face.iOwner].centroid
+        face.n = face.sf/(norm(face.sf))
 
-        ef = face.sf/(norm(face.sf))
         if face.iNeighbour != -1
+            face.dCF = cellVec[face.iNeighbour].centroid - cellVec[face.iOwner].centroid
             dfn = cellVec[face.iNeighbour].centroid - face.centroid
-
-            face.gf = dot(face.cn, ef) / (dot(face.cn, ef) + dot(dfn, ef))
-            face.t = dfn + face.cn
+            face.gf = dot(face.dCf, face.n) / (dot(face.dCf, face.n) + dot(dfn, face.n))
             face.wallDist = 0
-            face.geoDiff = face.area / norm(cellVec[face.iOwner].centroid - cellVec[face.iNeighbour].centroid)
         else
+            face.dCF = face.dCf
             face.gf = 1
-            face.t = face.cn
-            face.wallDist = dot(face.cn, ef)
-            face.geoDiff = face.area / face.wallDist
+            face.wallDist = dot(face.dCf, face.n)
         end
+        face.eCF = face.dCF / norm(face.dCF)
+        E = face.area * face.eCF
+        face.geoDiff = face.iNeighbour != -1 ? norm(E) / norm(face.dCF) : norm(E) / face.wallDist
+        face.t = face.sf - E
     end
 
     return Mesh(nodeVec, faceVec, cellVec, boundaryVec, nNodes, 
@@ -264,7 +268,7 @@ function printFace(face)
     println("                centroid: ", face.centroid)
     println("                    area: ", face.area)
     println("                      Sf: ", face.sf)
-    println("                      CN: ", face.cn)
+    println("                      CN: ", face.dCf)
     println("                 geodiff: ", face.geoDiff)
     println("                       T: ", face.t)
     println("                      gf: ", face.gf)
