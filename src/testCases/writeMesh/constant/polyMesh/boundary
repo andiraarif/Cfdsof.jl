@@ -7,18 +7,24 @@ FoamFile
     location    "constant/polyMesh";
     object      boundary;
 }
-2
+3
 (
-hotFace
+surrounding
 {
-type       patch;
-nFaces     600;
-startFace  46397;
+type       wall;
+nFaces     48;
+startFace  11;
 }
-otherFace
+leftWall
 {
-type       patch;
-nFaces     15546;
-startFace  46997;
+type       wall;
+nFaces     1;
+startFace  59;
+}
+rightWall
+{
+type       wall;
+nFaces     1;
+startFace  60;
 }
 )
