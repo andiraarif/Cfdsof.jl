@@ -16,5 +16,9 @@ function computeGradientGauss(field)
         gradPhi[iOwnerB] += field.faceValues[iFace] * mesh.faces[iFace].Sf
     end
 
+    for iCell in 1:mesh.nCells
+        gradPhi[iCell] = gradPhi[iCell] / mesh.cells[iCell].volume
+    end
+
     return gradPhi
 end

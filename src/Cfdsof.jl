@@ -28,7 +28,6 @@ assignFixedValueBC("rightWall", T, 500)
 # Interpolate field values at cell faces
 interpolateCellsToFaces(k, "harmonicMean")
 gradT = computeGradientGauss(T)
-println(gradT)
 
 # Write outputs
 writeVtu("src/testCases/vtu/$caseName", T, k)
