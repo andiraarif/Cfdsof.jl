@@ -1,3 +1,3 @@
 # Cfdsof
  
-A general three-dimensional unstructured finite volume solver written in Julia
+A general three-dimensional computational fluid dynamics (CFD) solver using finite volume method writte in Julia
