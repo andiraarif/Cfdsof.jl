@@ -5,7 +5,7 @@ function findBoundaryIndex(boundaries, name)
 end
 
 
-function assignFixedValueBC(mesh, boundaryName, field, value)
+function assignFixedValueBC(boundaryName, field, value)
     iBoundary = findBoundaryIndex(mesh.boundaries, boundaryName)
     boundary = mesh.boundaries[iBoundary]
     

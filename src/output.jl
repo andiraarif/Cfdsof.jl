@@ -1,6 +1,6 @@
 using WriteVTK
 
-function writeVtu(mesh, fileName, fields...)
+function writeVtu(fileName, fields...)
     println("Writing output in vtu format")
     x = [mesh.nodes[i].centroid[1] for i in 1:length(mesh.nodes)]
     y = [mesh.nodes[i].centroid[2] for i in 1:length(mesh.nodes)]

@@ -15,7 +15,7 @@ mutable struct Face
     iNodes::Vector{Int64}
     centroid::Vector{Float64}
     area::Float64
-    sf::Vector{Float64}
+    Sf::Vector{Float64}
     n::Vector{Float64}
     dCF::Vector{Float64}
     eCF::Vector{Float64}
@@ -74,7 +74,7 @@ end
 function faceIndexToSf(iFaces::Vector{Int64}, faceVec::Vector{Face})
     facesSf = Vector{Float64}[]
     for iFace in iFaces
-        push!(facesSf, faceVec[iFace].sf)
+        push!(facesSf, faceVec[iFace].Sf)
     end
     return facesSf
 end
@@ -172,8 +172,8 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
         faceVec[iFace].iOwner = owner[iFace]
 
         faceNodesCoord = nodeIndexToCoord(faces[iFace], points)
-        faceVec[iFace].centroid, faceVec[iFace].sf = polygonCentroidSurfaceVec(faceNodesCoord)
-        faceVec[iFace].area = norm(faceVec[iFace].sf)
+        faceVec[iFace].centroid, faceVec[iFace].Sf = polygonCentroidSurfaceVec(faceNodesCoord)
+        faceVec[iFace].area = norm(faceVec[iFace].Sf)
 
         cellVec[owner[iFace]].index = owner[iFace]
         push!(cellVec[owner[iFace]].iFaces, iFace)
@@ -225,7 +225,7 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
 
     for face in faceVec
         face.dCf = face.centroid - cellVec[face.iOwner].centroid
-        face.n = face.sf/(norm(face.sf))
+        face.n = face.Sf/(norm(face.Sf))
 
         if face.iNeighbour != -1
             face.dCF = cellVec[face.iNeighbour].centroid - cellVec[face.iOwner].centroid
@@ -238,9 +238,9 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
             face.wallDist = dot(face.dCf, face.n)
         end
         face.eCF = face.dCF / norm(face.dCF)
-        E = face.area * face.eCF
-        face.geoDiff = face.iNeighbour != -1 ? norm(E) / norm(face.dCF) : norm(E) / face.wallDist
-        face.t = face.sf - E
+        Ef = face.area * face.eCF
+        face.geoDiff = face.iNeighbour != -1 ? norm(Ef) / norm(face.dCF) : norm(Ef) / face.wallDist
+        face.t = face.Sf - Ef
     end
 
     return Mesh(nodeVec, faceVec, cellVec, boundaryVec, nNodes, 
@@ -267,7 +267,7 @@ function printFace(face)
     println("              iNeighbour: ", face.iNeighbour)
     println("                centroid: ", face.centroid)
     println("                    area: ", face.area)
-    println("                      Sf: ", face.sf)
+    println("                      Sf: ", face.Sf)
     println("                      CN: ", face.dCf)
     println("                 geodiff: ", face.geoDiff)
     println("                       T: ", face.t)
