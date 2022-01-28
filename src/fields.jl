@@ -14,14 +14,14 @@ mutable struct VectorField
     faceValues::Vector{Vector{Float64}}
 end
 
-function setupScalarField(name, mesh, time)
-    cellValues = [10.0 for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
-    faceValues = [0.0 for _ in 1:mesh.nFaces]
+function setupScalarField(mesh, name, time, value=0.0)
+    cellValues = [value for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
+    faceValues = [value for _ in 1:mesh.nFaces]
     return ScalarField(name, "scalar", time, cellValues, faceValues)
 end
 
-function setupVectorField(name, mesh, time)
-    cellValues = [[0.0, 0.0, 0.0] for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
-    faceValues = [[0.0, 0.0, 0.0] for _ in 1:mesh.nFaces]
+function setupVectorField(mesh, name, time, value=[0.0, 0.0, 0.0])
+    cellValues = [value for _ in 1:(mesh.nCells + mesh.nBoundaryFaces)]
+    faceValues = [value for _ in 1:mesh.nFaces]
     return VectorField(name, "vector", time, cellValues, faceValues)
 end

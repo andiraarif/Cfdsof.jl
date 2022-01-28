@@ -1,6 +1,7 @@
 using WriteVTK
 
 function writeVtu(mesh, fileName, fields...)
+    println("Writing output in vtu format")
     x = [mesh.nodes[i].centroid[1] for i in 1:length(mesh.nodes)]
     y = [mesh.nodes[i].centroid[2] for i in 1:length(mesh.nodes)]
     z = [mesh.nodes[i].centroid[3] for i in 1:length(mesh.nodes)]
