@@ -1,23 +1,25 @@
+include("fields.jl")
+
 function computeGradientGauss(field)
     interpolateCellsToFaces(field, "linear")
     
-    gradPhi = [[0.0, 0.0, 0.0] for _ in 1:mesh.nCells]
+    gradPhi = setupVectorField("grad$(field.name)")
 
     for iFace in 1:mesh.nInternalFaces
         iOwner = mesh.faces[iFace].iOwner
         iNeighbour = mesh.faces[iFace].iNeighbour
 
-        gradPhi[iOwner] += field.faceValues[iFace] * mesh.faces[iFace].Sf
-        gradPhi[iNeighbour] += field.faceValues[iFace] * mesh.faces[iFace].Sf
+        gradPhi.cellValues[iOwner] += field.faceValues[iFace] * mesh.faces[iFace].Sf
+        gradPhi.cellValues[iNeighbour] += field.faceValues[iFace] * mesh.faces[iFace].Sf
     end
 
     for iFace in mesh.nInternalFaces + 1:mesh.nFaces
         iOwnerB = mesh.faces[iFace].iOwner
-        gradPhi[iOwnerB] += field.faceValues[iFace] * mesh.faces[iFace].Sf
+        gradPhi.cellValues[iOwnerB] += field.faceValues[iFace] * mesh.faces[iFace].Sf
     end
 
     for iCell in 1:mesh.nCells
-        gradPhi[iCell] = gradPhi[iCell] / mesh.cells[iCell].volume
+        gradPhi.cellValues[iCell] = gradPhi.cellValues[iCell] / mesh.cells[iCell].volume
     end
 
     return gradPhi

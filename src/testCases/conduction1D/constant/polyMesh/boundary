@@ -22,22 +22,22 @@ FoamFile
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          20;
-        startFace       4;
+        nFaces          200;
+        startFace       49;
     }
     leftWall
     {
         type            wall;
         inGroups        1(wall);
         nFaces          1;
-        startFace       24;
+        startFace       249;
     }
     rightWall
     {
         type            wall;
         inGroups        1(wall);
         nFaces          1;
-        startFace       25;
+        startFace       250;
     }
 )
 

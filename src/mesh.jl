@@ -20,7 +20,7 @@ mutable struct Face
     dCF::Vector{Float64}
     eCF::Vector{Float64}
     dCf::Vector{Float64}
-    t::Vector{Float64}
+    Tf::Vector{Float64}
     geoDiff::Float64
     wallDist::Float64
     gf::Float64
@@ -47,7 +47,8 @@ mutable struct Boundary
     type::String
     startFace::Int64
     nFaces::Int64
-    Boundary() = new(0, "", "", 0, 0)
+    bcType::String
+    Boundary() = new(0, "", "", 0, 0, "")
 end
 
 mutable struct Mesh
@@ -240,7 +241,7 @@ function processOpenFoamMesh(points, faces, owner, neighbour, boundary)
         face.eCF = face.dCF / norm(face.dCF)
         Ef = face.area * face.eCF
         face.geoDiff = face.iNeighbour != -1 ? norm(Ef) / norm(face.dCF) : norm(Ef) / face.wallDist
-        face.t = face.Sf - Ef
+        face.Tf = face.Sf - Ef
     end
 
     return Mesh(nodeVec, faceVec, cellVec, boundaryVec, nNodes, 
@@ -270,7 +271,7 @@ function printFace(face)
     println("                      Sf: ", face.Sf)
     println("                      CN: ", face.dCf)
     println("                 geodiff: ", face.geoDiff)
-    println("                       T: ", face.t)
+    println("                       T: ", face.Tf)
     println("                      gf: ", face.gf)
     println("                walldist: ", face.wallDist)
     println("    iOwnerNeighbourCoeff: ", face.iOwnerNeighbourCoeff)
